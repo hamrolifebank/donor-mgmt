@@ -1,0 +1,2 @@
+# hapi js seed
+
