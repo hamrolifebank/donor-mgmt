@@ -1,2 +1,1 @@
-# hapi js seed
-
+Rumsan Hapi.js Seed for backend

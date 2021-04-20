@@ -1,0 +1,107 @@
+@media only screen and (max-width: 600px) {
+  .welcome {
+    color: #989b9f;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+  }
+  .welcome_subtitle {
+    color: #0b436a;
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 28px;
+  }
+  .welcome_image {
+    height: 100px;
+  }
+  .mobile-margin {
+    margin-top: 0.5rem !important;
+  }
+  .section {
+    padding: 35px 0px;
+  }
+  .batch-info {
+    text-align: center;
+    font-weight: 700;
+    color: #0b436a;
+    font-size: 20px;
+  }
+  .shadow,
+  .shadow-sm {
+    margin-bottom: 1.5rem !important;
+  }
+  #tabs .nav-tabs .nav-item.show .nav-link,
+  .nav-tabs .nav-link.active {
+    font-size: 24px;
+  }
+  .nav-tabs .nav-link {
+    font-size: 20px;
+  }
+  .icon-image {
+    width: 50px;
+    height: 50px;
+  }
+  .batch-property {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  .batch-property-value {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .farmer_information {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  .farmer_name {
+    font-size: 16px !important;
+    line-height: 10px !important;
+  }
+  .farmer_information_mobile {
+    font-size: 20px;
+    line-height: 20px;
+  }
+  p {
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .timeline-ring {
+    height: 25px;
+    width: 25px;
+  }
+  .vertical-line {
+    border-left: 4px dotted #6f6f6f;
+    height: 95px;
+    position: absolute;
+    margin-top: 0.5rem;
+    left: 47%;
+  }
+
+  .timeline-image {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    height: 20px;
+    width: 20px;
+  }
+  .timeline-date {
+    font-size: 14px;
+  }
+  .timeline-detail {
+    font-size: 12px;
+  }
+  .shadow-padding {
+    padding: 15px 15px !important;
+  }
+  .mobile-padding {
+    padding: 0px !important;
+    margin-top: 1.5rem;
+  }
+  .carousel-control-prev-icon:after {
+    display: none;
+  }
+  .carousel-control-next-icon:after {
+    display: none;
+  }
+}

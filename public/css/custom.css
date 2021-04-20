@@ -1,0 +1,148 @@
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;800&display=swap);
+
+@font-face {
+  font-family: "Montserrat", sans-serif;
+  src: url(https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;600;800&display=swap);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif !important;
+}
+
+p {
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 18px;
+  line-height: 30px;
+}
+body {
+  background-color: #f1f4f6 !important;
+}
+.welcome {
+  color: #989b9f;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 40px;
+}
+.welcome_subtitle {
+  color: #3e5569;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 60px;
+}
+.welcome_image {
+  height: 200px;
+}
+
+.goat-info {
+  /* text-align: center; */
+  font-weight: 700;
+  color: #3e5569;
+  font-size: 24px;
+}
+.rounded {
+  border-radius: 30px !important;
+}
+.shadow {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+.shadow-sm {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important ;
+}
+
+/*TAB CSS*/
+
+#tabs .nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  color: #3e5569;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 32px;
+  background-color: transparent;
+  border-color: transparent transparent #f3f3f3;
+  border-bottom: 8px solid !important;
+  font-weight: bold;
+}
+.nav-tabs .nav-link {
+  color: #3e5569;
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 32px;
+}
+
+.batch-property {
+  color: #060606;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.batch-property-value {
+  color: #3e5569;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+}
+
+.icon-image {
+  height: 80px;
+  background: #e7e7e7;
+  border-radius: 20%;
+  padding: 0.8rem;
+}
+
+.farmer_information {
+  color: #3e5569;
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.btn.btn-primary {
+  background-color: #3e5569 !important;
+  border-color: #3e5569 !important;
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.btn.btn-primary:hover {
+  font-family: "Montserrat", sans-serif !important;
+
+  background-color: #00406ad1 !important;
+  border-color: #00406ad1 !important;
+}
+
+.timeline-date {
+  color: #3e5569;
+  font-size: 32px;
+  font-weight: 800;
+}
+
+.timeline-detail {
+  color: #77797d;
+  font-size: 24px;
+  font-weight: 400;
+}
+.timeline-image {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  height: 45px;
+  width: 45px;
+}
+
+.timeline-ring {
+  height: 50px;
+  width: 50px;
+}
+
+.vertical-line {
+  border-left: 5px dotted #6f6f6f;
+  height: 245px;
+  position: absolute;
+  margin-top: 1rem;
+  left: 49%;
+}
