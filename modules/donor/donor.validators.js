@@ -6,7 +6,7 @@ module.exports = {
 		payload: Joi.object({
 			name: Joi.string().required(),
 			phone: Joi.string().required().example('014223232 / 9841232323'),
-			contacts: Joi.array().items(Joi.string()),
+			contacts: Joi.array().items(Joi.object({ phone: Joi.string().allow('') })),
 			email: Joi.string().allow('').example('hello@gmail.com'),
 			address: Joi.string().allow('').example('Kathmandu'),
 			dob: Joi.date().allow(''),
