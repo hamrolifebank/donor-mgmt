@@ -16,7 +16,7 @@ const splitBloodInfo = blood_info => {
 };
 
 const Donor = {
-	async add() {
+	async add(payload) {
 		let donor = null;
 		const teams = payload.team ? ObjectId(payload.team) : null;
 
@@ -88,6 +88,10 @@ const Donor = {
 				.then(d => resolve(d))
 				.catch(e => reject(e));
 		});
+	},
+
+	addTeam({ donor_id, teams }) {
+		return DonorModel.findByIdAndUpdate(donor_id, { $addToSet: { teams } }, { new: true });
 	},
 
 	async list({ limit, start, group, phone, name, address, gender }) {
@@ -183,10 +187,36 @@ const Donor = {
 module.exports = {
 	Donor,
 	add: req => Donor.add(req.payload),
-	list: req => Donor.list(req.query),
-	get: req => Donor.get(req.params.id),
-	findByPhone: req => Donor.getByPhone(req.query.phone),
-	findByName: req => Donor.getByName(req.query.name),
+	list: req => {
+		const { query } = req;
+		const single = query.single || false;
+		const start = query.start || 0;
+		const limit = query.limit || 20;
+		const group = query.group || null;
+		const name = query.name || null;
+		const phone = query.phone || null;
+		const address = query.address || null;
+		const gender = query.gender || null;
+
+		if (single) {
+			const results = {};
+			if (phone) return Donor.getByPhone(phone);
+			return results;
+		}
+		return Donor.list({
+			query,
+			start,
+			limit,
+			group,
+			name,
+			phone,
+			address,
+			gender,
+		});
+	},
+	getById: req => Donor.get(req.params.id),
+	getByPhone: req => Donor.getByPhone(req.query.phone),
+	getByName: req => Donor.getByName(req.query.name),
 	update: req => Donor.update(req.params.id, req.payload),
 	remove: req => Donor.remove(req.params.id),
 };
