@@ -7,7 +7,7 @@ const Schema = mongoose.Schema(
 		donor_no: { type: String }, // HLB001
 		name: { type: String, required: true },
 		phone: { type: String, required: true },
-		contacts: [{ phone: String }],
+		contacts: [{ phone: String, _id: false }],
 		email: { type: String },
 		address: { type: String },
 		dob: { type: Date },
