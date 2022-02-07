@@ -75,4 +75,28 @@ module.exports = {
 			extras: Joi.object().allow(''),
 		}).label('Donor'),
 	},
+
+	getByPhone: {
+		query: Joi.object({ phone: Joi.string().required() }),
+	},
+
+	getByName: {
+		query: Joi.object({ name: Joi.string().required() }),
+	},
+
+	addSingleVerified: {
+		payload: Joi.object({}),
+	},
+
+	addDonation: {
+		params: GooseJoi.id(),
+		payload: Joi.object({}),
+	},
+
+	removeDonation: {
+		params: GooseJoi.id(),
+		payload: Joi.object({
+			donation_id: Joi.string(),
+		}),
+	},
 };
