@@ -8,11 +8,11 @@ const routes = {
 	getById: ['GET', '/{id}', 'Find donor by ID'],
 	getByPhone: ['GET', '/byphone', 'Find donor by phone number'],
 	getByName: ['GET', '/byname', 'Find donor by name'],
-	update: ['PUT', '/{id}', 'Update a donor'],
+	update: ['POST', '/{id}', 'Update a donor'],
 	remove: ['DELETE', '/{id}', 'Remove a donor'],
 	addDonation: ['POST', '/{id}/donations', 'Add donations'],
 	removeDonation: ['DELETE', '/{id}/donations', 'Remove donations'],
-	dispatch: ['GET', '/dispatch/{id}', 'Dispatch'],
+	dispatch: ['GET', '/dispatch/{id}', 'Dispatch donors'],
 };
 
 /**

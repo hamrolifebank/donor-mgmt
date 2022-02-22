@@ -469,7 +469,7 @@ module.exports = {
 		const name = req.body.payload || null;
 		const gender = req.payload.gender || null;
 		const donorids = req.payload.ids;
-		return DonorController.dispatch({
+		return Donor.dispatch({
 			group,
 			address,
 			name,

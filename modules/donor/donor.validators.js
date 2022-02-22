@@ -99,4 +99,17 @@ module.exports = {
 			donation_id: Joi.string(),
 		}),
 	},
+
+	// dispatch: {
+	// 	params: GooseJoi.id(),
+	// 	payload: Joi.object({
+	// 		group: Joi.string(),
+	// 		address: Joi.string(),
+	// 		name: Joi.string(),
+	// 		gender: Joi.string(),
+	// 		donorids: Joi.string(),
+	// 		limit: Joi.string(),
+	// 		start: Joi.string(),
+	// 	}),
+	// },
 };
