@@ -32,6 +32,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.10.2",
     "nodemailer": "^6.4.16",
+    "otp-generator": "^4.0.0",
     "pino": "^6.5.1",
     "pino-pretty": "^4.2.0",
     "rs-user": "git+ssh://git@lab.rumsan.net:rs/user.git#ict4d",
