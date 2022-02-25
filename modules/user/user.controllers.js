@@ -263,7 +263,7 @@ const controllers = {
 			if (otpResponse !== null) {
 				if (otp === otpResponse.otp) {
 					if (otpResponse.verified !== true) {
-						if (otpResponse.dates.compare(otpResponse.expiration_date, now) === 1) {
+						if (controllers.dates.compare(otpResponse.expiration_date, now) === 1) {
 							await OtpModel.findByIdAndUpdate(otpResponse._id, { verified: true });
 							return { status: 'success', message: 'OTP Matched' };
 						}
