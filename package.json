@@ -36,7 +36,8 @@
     "pino": "^6.5.1",
     "pino-pretty": "^4.2.0",
     "rs-user": "git+ssh://git@lab.rumsan.net:rs/user.git#ict4d",
-    "rumsan-core": "^1.0.1"
+    "rumsan-core": "^1.0.1",
+    "slugify": "^1.6.5"
   },
   "devDependencies": {
     "eslint": "^7.7.0",
