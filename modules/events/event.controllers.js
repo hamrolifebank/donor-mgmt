@@ -201,23 +201,23 @@ const Event = {
 		let user = null;
 		let isNewUser = false;
 
-		const event = await this.get(eventId);
+		const event = await Event.getById(eventId);
 		if (!event) throw ERR.EVENT_NOEXISTS;
 
 		if (payload.user_id) {
-			user = await UserController.getById(payload.user_id, {});
+			user = await UserController.User.getById(payload.user_id, {});
 			// TODO check and remove try catch
 			try {
 				const updateFields = { user_id: payload.user_id };
 				if (user.name.full != payload.name) updateFields.name = payload.name;
 				if (user.email != payload.email) updateFields.email = payload.email;
 				if (user.phone != payload.phone) updateFields.phone = payload.phone;
-				await UserController.update(updateFields);
+				await UserController.User.update(updateFields);
 			} catch (e) {}
 		} else {
 			isNewUser = true;
 			try {
-				user = await UserController.createUsingEmail(payload);
+				user = await UserController.User.createUsingEmail(payload);
 			} catch (error) {
 				throw error;
 			}
@@ -238,7 +238,7 @@ const Event = {
 		let donor = null;
 		const last_donated_date = donorData.last_donated_date || null;
 		if (user.donor) {
-			donor = await DonorController.get(user.donor);
+			donor = await DonorController.Donor.get(user.donor);
 			donor.wallet_address = donorData.wallet_address;
 			donor.user_id = donorData.user_id;
 			donor.name = donorData.name;
@@ -264,8 +264,8 @@ const Event = {
 			donor.save();
 		} else {
 			if (!donorData.blood_group) delete donorData.blood_group;
-			donor = await DonorController.add(donorData);
-			await UserController.models.UserModel.findByIdAndUpdate(user._id, { donor: donor._id });
+			donor = await DonorController.Donor.add(donorData);
+			await UserController.User.model.findByIdAndUpdate(user._id, { donor: donor._id });
 		}
 
 		// Add consent
@@ -389,8 +389,8 @@ module.exports = {
 		};
 		return Event.update(req.params.eventId, payload);
 	},
-	getEventUsers: req => Event.getEventUsers(req.params.eventId),
-	addEventUsers: req => Event.addEventUsers(req.params.eventId, req.payload.user_id, req.payload.event_role),
+	getEventUsers: req => Event.getEventUsers(req.params.id),
+	addEventUsers: req => Event.addEventUsers(req.params.id, req.payload.user_id, req.payload.event_role),
 	inviteUsers: req => Event.inviteUsers(req.params.eventId, req.payload),
 	listEventWithDetails: req => {
 		const limit = parseInt(req.query.limit) || 20;
@@ -406,11 +406,11 @@ module.exports = {
 			isComplete,
 		});
 	},
-	getRegisterOption: req => Event.getRegisterOption({ eventId: req.params.eventId, user_id: req.tokenData.user_id }),
-	register: req => Event.register(req.params.eventId, req.body),
+	getRegisterOption: req => Event.getRegisterOption({ eventId: req.params.id, user_id: req.tokenData.user_id }),
+	register: req => Event.register(req.params.id, req.payload),
 	check: async req => {
 		let result = false;
-		const event_id = req.params.eventId;
+		const event_id = req.params.id;
 		if (!req.query.for) {
 			result = false;
 		} else if (req.query.for == 'bloodbag') {
