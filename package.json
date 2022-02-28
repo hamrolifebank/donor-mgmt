@@ -23,6 +23,7 @@
     "axios": "^0.20.0",
     "config": "^3.3.1",
     "cross-env": "^7.0.2",
+    "ethers": "^5.5.4",
     "handlebars": "^4.7.6",
     "hapi-swagger": "^14.0.0",
     "hapi-swagger-static": "^2.0.13",
