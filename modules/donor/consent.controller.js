@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongoose').Types;
 
 const ConsentModel = require('./consent.model');
-const DonorController = require('./donor.controller');
+const DonorController = require('./donor.controllers');
 const { TextUtils } = require('../../utils');
 
 class Controller {
@@ -23,9 +23,9 @@ class Controller {
 
 		if (donor.id) {
 			const donorId = ObjectId(donor.id);
-			donor = await DonorController.update(donorId, donor);
+			donor = await DonorController.Donor.update(donorId, donor);
 		} else {
-			donor = await DonorController.add(donor);
+			donor = await DonorController.Donor.add(donor);
 		}
 
 		// Save Consent
