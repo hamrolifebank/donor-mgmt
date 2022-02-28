@@ -18,21 +18,20 @@ mongoose.connect(config.get('app.db'), {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	useFindAndModify: false,
-	useCreateIndex: true
+	useCreateIndex: true,
 });
-
 const server = new Hapi.Server({
 	port,
 	router: {
-		stripTrailingSlash: true
+		stripTrailingSlash: true,
 	},
 	routes: {
 		cors: {
 			origin: config.has('app.origin') ? config.get('app.origin') : ['*'],
-			additionalHeaders: ['cache-control', 'x-requested-with', 'access_token']
+			additionalHeaders: ['cache-control', 'x-requested-with', 'access_token', 'auth_signature', 'data_signature'],
 		},
 		files: {
-			relativeTo: path.join(__dirname, 'client/build')
+			relativeTo: path.join(__dirname, 'client/build'),
 		},
 		validate: {
 			failAction: async (request, h, err) => {
@@ -42,16 +41,16 @@ const server = new Hapi.Server({
 						.response({
 							statusCode: 400,
 							error: 'Bad Request',
-							message: err.message
+							message: err.message,
 						})
 						.code(400)
 						.takeover();
 				}
 				// During development, log and respond with the full error.
 				return err;
-			}
-		}
-	}
+			},
+		},
+	},
 });
 // connect websocket
 ws.create(server.listener);
@@ -61,17 +60,17 @@ const swaggerOptions = {
 	info: {
 		title: config.get('app.name'),
 		version: process.env.npm_package_version,
-		description: process.env.npm_package_description
+		description: process.env.npm_package_description,
 	},
 	securityDefinitions: {
 		jwt: {
 			type: 'apiKey',
 			name: 'access_token',
-			in: 'header'
-		}
+			in: 'header',
+		},
 	},
 	security: [{ jwt: [] }],
-	grouping: 'tags'
+	grouping: 'tags',
 };
 
 /**
@@ -84,8 +83,8 @@ async function startServer() {
 		Vision,
 		{
 			plugin: HapiSwagger,
-			options: swaggerOptions
-		}
+			options: swaggerOptions,
+		},
 	]);
 	server.ext('onPreHandler', (request, h) => {
 		const host = request.info.hostname;
@@ -100,9 +99,9 @@ async function startServer() {
 		handler: {
 			directory: {
 				path: path.join(__dirname, 'public/'),
-				listing: false
-			}
-		}
+				listing: false,
+			},
+		},
 	});
 	server.route({
 		path: '/resources/{path*}',
@@ -111,9 +110,9 @@ async function startServer() {
 			directory: {
 				path: '../../public/',
 				listing: true,
-				index: false
-			}
-		}
+				index: false,
+			},
+		},
 	});
 
 	server.route({
@@ -125,7 +124,7 @@ async function startServer() {
 				return h.file(param);
 			}
 			return h.file('index.html');
-		}
+		},
 	});
 
 	await server.start();
@@ -152,7 +151,7 @@ async function shutDown() {
 		isStopping = true;
 		const lapse = process.env.STOP_SERVER_WAIT_SECONDS ? process.env.STOP_SERVER_WAIT_SECONDS : 5;
 		await server.stop({
-			timeout: lapse * 1000
+			timeout: lapse * 1000,
 		});
 	}
 }
