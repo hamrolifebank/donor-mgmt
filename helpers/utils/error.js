@@ -9,7 +9,7 @@ class RSError extends Error {
 			type: 'rserror',
 			message,
 			name: name || 'none',
-			httpCode: httpCode || 500
+			httpCode: httpCode || 500,
 		};
 		this.status = httpCode || 500;
 		this.className = this.constructor.name;
@@ -30,13 +30,18 @@ const ERR = {
 	INVALID_COORDINATES: new RSError(
 		'Invalid Coordinates. Longitude should be in betweeen -180 and 180. Latitude should be in between -90 and 90',
 		'invalid_coordinates',
-		400
+		400,
 	),
 	ORG_PHONE_EXISTS: new RSError('Phone Number is already registered', 'org_phone_exists', 400),
 	ORG_EMAIL_EXISTS: new RSError('Email already registered.', 'org_email_exists', 400),
 	EMAIL_NOEXISTS: new RSError('Email does not exists.', 'email_noexists', 400),
 	PHONE_NOEXISTS: new RSError('Phone does not exists.', 'phone_noexists', 400),
-	OVERORDERED: new RSError('Quantity selected is higher than availability of product', 'overordered', 400)
+	OVERORDERED: new RSError('Quantity selected is higher than availability of product', 'overordered', 400),
+	SIGNATURE_EXPIRED: new RSError('Signature expired', 'expired', 401),
+	SIGNATURE_NO_MATCH: new RSError('Signature doesnot matched', 'expired', 401),
+	AUTH_SIGNATURE_NO_DATA: new RSError('Auth signature doesnot have data', 'no data', 403),
+	DATA_SIGNATURE_NO_DATA: new RSError('Data signature doesnot have data', 'no data', 403),
+
 	// DEFAULT: new RSError('', '', 400),
 };
 
