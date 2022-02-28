@@ -8,6 +8,7 @@ const messenger = require('../../helpers/utils/messenger');
 const smsService = require('../../helpers/utils/sms');
 const { Role } = require('./role.controllers');
 const OtpModel = require('../otp/otp.model');
+const OTP = require('../../constants/otp');
 
 const fnCreateSchema = (schema, collectionName) => {
 	const userSchema = mongoose.Schema(schema, {
@@ -223,15 +224,15 @@ const controllers = {
 	},
 
 	async generateOTP(req) {
-		const { email, otpLength, otpValidTime } = req.payload;
+		const { email } = req.payload;
 		const now = new Date();
-		const otp = otpGenerator.generate(otpLength, {
+		const otp = otpGenerator.generate(OTP.LENGTH, {
 			lowerCaseAlphabets: false,
 			upperCaseAlphabets: false,
 			specialChars: false,
 		});
 
-		const expirationTime = controllers.addMinutesToDate(now, otpValidTime);
+		const expirationTime = controllers.addMinutesToDate(now, OTP.VALID_TIME);
 		const payload = { otp, expiration_date: expirationTime };
 		try {
 			const otpResponse = await OtpModel.create(payload);
@@ -246,7 +247,7 @@ const controllers = {
 				email,
 				otp,
 				template: 'OTP_SEND',
-				otpValidTime,
+				otpValidTime: OTP.VALID_TIME,
 			});
 
 			return otpDetails;
