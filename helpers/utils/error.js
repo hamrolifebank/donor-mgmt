@@ -38,9 +38,9 @@ const ERR = {
 	PHONE_NOEXISTS: new RSError('Phone does not exists.', 'phone_noexists', 400),
 	OVERORDERED: new RSError('Quantity selected is higher than availability of product', 'overordered', 400),
 	SIGNATURE_EXPIRED: new RSError('Signature expired', 'expired', 401),
-	SIGNATURE_NO_MATCH: new RSError('Signature doesnot matched', 'expired', 401),
-	AUTH_SIGNATURE_NO_DATA: new RSError('Auth signature doesnot have data', 'no data', 403),
-	DATA_SIGNATURE_NO_DATA: new RSError('Data signature doesnot have data', 'no data', 403),
+	SIGNATURE_NO_MATCH: new RSError('Signature does not match', 'expired', 401),
+	AUTH_SIGNATURE_NO_DATA: new RSError('Auth signature does not have data', 'no data', 403),
+	DATA_SIGNATURE_NO_DATA: new RSError('Data signature does not have data', 'no data', 403),
 
 	// DEFAULT: new RSError('', '', 400),
 };
