@@ -24,9 +24,9 @@ module.exports = {
 	register: {
 		params: GooseJoi.id('Enter Event ID'),
 		payload: Joi.object({
-			wallet_address: Joi.string(),
+			walletAddress: Joi.string(),
 			user_id: Joi.objectId(),
-			googleId: Joi.string(),
+			serviceId: Joi.string(),
 			name: Joi.string(),
 			phone: Joi.string(),
 			email: Joi.string().email().required(),
