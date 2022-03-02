@@ -10,6 +10,8 @@ const { Role } = require('./role.controllers');
 const OtpModel = require('../otp/otp.model');
 const OTP = require('../../constants/otp');
 
+const { ObjectId } = mongoose.Schema;
+
 const fnCreateSchema = (schema, collectionName) => {
 	const userSchema = mongoose.Schema(schema, {
 		collection: collectionName,
@@ -32,6 +34,18 @@ const User = new RSUser.User({
 	schema: {
 		user_token: String,
 		token_expiration: Number,
+		address: String,
+		is_donor: { type: Boolean, default: false },
+		donor: {
+			type: ObjectId,
+			ObjectId: true,
+			default: false,
+			ref: 'Donor',
+		},
+		created_at: Date,
+		updated_at: Date,
+		email_verified: { type: Boolean, default: false },
+		phone_verified: { type: Boolean, default: false },
 	},
 	fnCreateSchema,
 });
