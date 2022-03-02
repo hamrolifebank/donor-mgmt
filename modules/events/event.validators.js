@@ -16,6 +16,9 @@ module.exports = {
 			start: Joi.number(),
 			search: Joi.string(),
 			org_id: GooseJoi.id(),
+			currentPage: Joi.number(),
+			total: Joi.number(),
+			totalPages: Joi.number(),
 		}),
 	},
 	getById: {
@@ -25,7 +28,7 @@ module.exports = {
 		params: GooseJoi.id('Enter Event ID'),
 		payload: Joi.object({
 			walletAddress: Joi.string(),
-			user_id: Joi.objectId(),
+			userId: Joi.objectId(),
 			serviceId: Joi.string(),
 			name: Joi.string(),
 			phone: Joi.string(),
