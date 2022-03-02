@@ -6,6 +6,7 @@ const routes = {
 	auth: ['get', '', 'Get the token data'],
 	generateOTP: ['POST', '/otp-generate', 'Generate OTP'],
 	verifyOTP: ['POST', '/otp-verify', 'Verify OTP'],
+	googleLogin: ['POST', '/google-login', 'Google Login'],
 };
 
 /**

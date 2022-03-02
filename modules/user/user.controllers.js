@@ -9,6 +9,7 @@ const smsService = require('../../helpers/utils/sms');
 const { Role } = require('./role.controllers');
 const OtpModel = require('../otp/otp.model');
 const OTP = require('../../constants/otp');
+const RoleController = require('./role.controllers');
 
 const { ObjectId } = mongoose.Schema;
 
@@ -38,8 +39,6 @@ const User = new RSUser.User({
 		is_donor: { type: Boolean, default: false },
 		donor: {
 			type: ObjectId,
-			ObjectId: true,
-			default: false,
 			ref: 'Donor',
 		},
 		created_at: Date,
@@ -295,6 +294,27 @@ const controllers = {
 		} catch (e) {
 			throw e;
 		}
+	},
+	async createTokenData(user) {
+		const permissions = await RoleController.calculatePermissions(user.roles);
+		return {
+			permissions,
+		};
+	},
+
+	async googleLogin(request) {
+		console.log('inside googlelogin:', request.payload);
+		const { payload } = request;
+		const res = await User.authenticateExternal({
+			service: 'google',
+			service_id: payload.serviceId,
+			tokenData: this.createTokenData,
+			data: {
+				...payload,
+				wallet_address: payload.walletAddress,
+			},
+		});
+		return res;
 	},
 };
 
