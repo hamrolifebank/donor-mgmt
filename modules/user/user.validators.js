@@ -107,4 +107,20 @@ module.exports = {
 			}),
 		}),
 	},
+	googleLogin: {
+		payload: Joi.object({
+			name: Joi.string(),
+			email: Joi.string(),
+			phone: Joi.string(),
+			address: Joi.string(),
+			gender: Joi.string(),
+			bloodGroup: Joi.string(),
+			service: Joi.string(),
+			serviceId: Joi.string(),
+			tokenData: Joi.string(),
+			socialData: Joi.object(),
+			imageUrl: Joi.string(),
+			walletAddress: Joi.string(),
+		}),
+	},
 };
