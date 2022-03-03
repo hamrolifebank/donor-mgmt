@@ -16,6 +16,7 @@ const routes = {
 	verifyResetToken: ['GET', '/password_reset/{token}', 'Verify Token'],
 	resetPassword: ['POST', '/{id}/reset_password', 'Reset Password'],
 	changePassword: ['POST', '/{id}/change_password', 'Change Password'],
+	getFullInfo: ['GET', '/me', 'Get current user info'],
 };
 
 /**

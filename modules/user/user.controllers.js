@@ -316,6 +316,11 @@ const controllers = {
 		});
 		return res;
 	},
+
+	async getFullInfo(req) {
+		const user = await User.validateToken(req.headers.access_token);
+		return User.model.findById(user._id, { password: 0 }).populate('comms').populate('donor');
+	},
 };
 
 module.exports = controllers;
