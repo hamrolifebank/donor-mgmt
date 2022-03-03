@@ -11,7 +11,12 @@ const Schema = mongoose.Schema(
 		email: { type: String },
 		address: { type: String },
 		dob: { type: Date },
-		gender: { type: String, required: true, enum: ['M', 'F', 'O'] },
+		gender: {
+			type: String,
+			required: true,
+			enum: ['M', 'F', 'O', 'U'],
+			default: 'U',
+		},
 		blood_info: {
 			group: { type: String, enum: ['A', 'B', 'O', 'AB', ''] },
 			rh_factor: { type: String, enum: ['+', '-'] },
@@ -28,6 +33,7 @@ const Schema = mongoose.Schema(
 			name: String,
 		},
 		extras: {},
+		user_id: { type: ObjectId, ref: 'User' },
 		created_by: { type: ObjectId, ref: 'User' },
 		updated_by: { type: ObjectId, ref: 'User' },
 	},
