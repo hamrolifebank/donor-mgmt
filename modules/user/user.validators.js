@@ -121,6 +121,7 @@ module.exports = {
 			socialData: Joi.object(),
 			imageUrl: Joi.string(),
 			walletAddress: Joi.string(),
+			isDonor: Joi.boolean(),
 		}),
 	},
 };
