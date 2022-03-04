@@ -24,6 +24,16 @@ const Schema = mongoose.Schema(
 			verified_date: { type: Date },
 		},
 		last_donated_date: { type: Date },
+		event: { type: ObjectId, ref: 'Event' },
+		donations: [
+			{
+				event_id: { type: ObjectId, ref: 'Event', required: true },
+				event_name: { type: String, required: true },
+				location: { type: String },
+				date: { type: Date, required: true },
+				time: { type: String },
+			},
+		],
 		donations_legacy: [{ date: Date, site: String }],
 		geo_location: {
 			longitude: Number,
