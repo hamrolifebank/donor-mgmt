@@ -304,7 +304,7 @@ const controllers = {
 
 	async createDonorAndUpdateUser({ userId, payload }) {
 		console.log('\npayload', payload);
-		const resDonor = await DonorController.add(payload, { user_id: userId });
+		const resDonor = await DonorController.add({ ...payload, user_id: userId });
 		console.log('\nresDonor', resDonor);
 		const resUser = await User.update(userId, { ...payload, donor: resDonor.id, is_donor: payload.isDonor });
 		console.log('\nresUser', resUser);
@@ -324,7 +324,7 @@ const controllers = {
 			},
 		});
 		if (payload.isDonor === true) {
-			const existingDonor = await DonorController.searchDonorId(res.user.id);
+			const existingDonor = await DonorController.getByUserId(res.user.id);
 			console.log('existing donor', existingDonor);
 			let response;
 			if (!existingDonor || existingDonor.length === 0) {
