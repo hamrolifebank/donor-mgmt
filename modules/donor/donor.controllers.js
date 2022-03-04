@@ -132,8 +132,8 @@ const Donor = {
 		return this.add(payload);
 	},
 
-	async searchDonorId(userId) {
-		const donor = await DonorModel.find({
+	async getByUserId(userId) {
+		const donor = await DonorModel.findOne({
 			user_id: userId,
 		});
 		return donor;
@@ -158,10 +158,9 @@ const Donor = {
 			}
 		}
 
-		payload.blood_group = payload.blood_info.group + payload.blood_info.rh_factor;
 		return DonorModel.findOneAndUpdate(
 			{ _id: ObjectId(id) },
-			{ $addToSet: { donations_legacy: payload.last_donated_date }, $set: payload },
+			payload.last_donated_date && { $addToSet: { donations_legacy: payload.last_donated_date }, $set: payload },
 			{ new: true },
 		);
 	},
