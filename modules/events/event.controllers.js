@@ -193,133 +193,44 @@ const Event = {
 		return true;
 	},
 
-	async register(eventId, payload) {
-		// const UserController = require('../user/user.controller');
-		// const DonorController = require('../donor/donor.controller');
-		// TODO need to add group info on donor
-		// Add user
-		let user = null;
-		let isNewUser = false;
+	async checkEventValid(eventId) {
+		const event = await this.getById(eventId);
+		if (moment(event.date).isAfter() || moment(event.date).isSame()) return true;
+		return false;
+	},
 
+	async checkEventExists(eventId) {
 		const event = await Event.getById(eventId);
-		if (!event) throw ERR.EVENT_NOEXISTS;
+		if (!event) return false;
+		return true;
+	},
 
-		if (payload.user_id) {
-			user = await UserController.User.getById(payload.user_id, {});
-			// TODO check and remove try catch
-			try {
-				const updateFields = { user_id: payload.user_id };
-				if (user.name.full != payload.name) updateFields.name = payload.name;
-				if (user.email != payload.email) updateFields.email = payload.email;
-				if (user.phone != payload.phone) updateFields.phone = payload.phone;
-				await UserController.User.update(updateFields);
-			} catch (e) {}
-		} else {
-			isNewUser = true;
-			try {
-				user = await UserController.User.createUsingEmail(payload);
-			} catch (error) {
-				throw error;
+	async checkUserRegisteredToEvent({ userId, eventId }) {
+		const donor = await DonorController.Donor.getByUserId(userId);
+		if (!donor.event) return false;
+		if (donor.event == eventId) return true;
+		return false;
+	},
+
+	async register(eventId, payload) {
+		try {
+			if (!(await this.checkEventExists(eventId))) throw ERR.EVENT_NOEXISTS;
+			if (!(await this.checkEventValid(eventId))) throw ERR.EVENT_EXPIRED;
+			if (await this.checkUserRegisteredToEvent({ eventId, userId: payload.userId })) {
+				throw ERR.EVENT_ALREADY_REGISTERED;
 			}
-		}
 
-		// Add donor
-		const donorData = {
-			...payload,
-			user_id: user._id,
-			event: eventId,
-			misc: {
-				nation_database: payload.nation_database,
-			},
-			created_by: user._id,
-			updated_by: user._id,
-		};
-
-		let donor = null;
-		const last_donated_date = donorData.last_donated_date || null;
-		if (user.donor) {
-			donor = await DonorController.Donor.get(user.donor);
-			donor.wallet_address = donorData.wallet_address;
-			donor.user_id = donorData.user_id;
-			donor.name = donorData.name;
-			donor.phone = donorData.phone;
-			donor.email = donorData.email;
-			donor.dob = donorData.dob;
-			donor.gender = donorData.gender;
-			donorData.blood_group = donorData.blood_group || null;
-			if (typeof donorData.blood_group === 'string') {
-				const blood_info = splitBloodInfo(donorData.blood_group);
-				blood_info.is_verified = false;
-				delete donorData.blood_group;
-				donor.blood_info = blood_info;
-			} else if (!donorData.blood_group) {
-				delete donorData.blood_group;
-			} else {
-				donor.blood_info = donorData.blood_group;
-				delete donorData.blood_group;
-			}
-			donor.address = donorData.address;
-			donor.misc = donorData.misc;
-			if (last_donated_date) donor.last_donated_date = donorData.last_donated_date;
-			donor.save();
-		} else {
-			if (!donorData.blood_group) delete donorData.blood_group;
-			donor = await DonorController.Donor.add(donorData);
-			await UserController.User.model.findByIdAndUpdate(user._id, { donor: donor._id });
-		}
-
-		// Add consent
-		const questions = {
-			...payload.questions,
-			donated_before: payload.donated_before,
-			nation_database: payload.nation_database,
-			hlb_tnc: payload.hlb_tnc,
-			heard_from: payload.heard_from,
-			post_event_plan: payload.post_event_plan,
-			inform_result: payload.inform_result,
-			inform_method: payload.inform_method,
-		};
-		const consentData = {
-			donor: donor._id,
-			event: eventId,
-			medical_info: {
-				blood_group: payload.blood_group,
-			},
-			questions,
-			created_by: user._id,
-			updated_by: user._id,
-		};
-		let consent = await ConsentModel.findOne({ event: eventId, donor: donor._id });
-		if (!consent) {
-			consentData.donor_info = {
-				name: donor.name,
-				gender: donor.gender,
-				phone: donor.phone,
+			const donor = await DonorController.Donor.getByUserId(payload.userId);
+			const updateFields = {
+				event: eventId,
+				updated_by: payload.userId,
 			};
-			consent = new ConsentModel(consentData);
-			await consent.save();
-			SendMail({
-				to: donorData.email,
-				data: {
-					event_id: event._id,
-					event_name: event.name,
-					user_first: user.name.first,
-					location: event.location,
-				},
-				template: TEMPLATES.REGISTER_EVENT,
-			});
-		} else {
-			consent.medical_info = consentData.medical_info;
-			consent.questions = consentData.questions;
-			consent.save();
-		}
 
-		return {
-			isNewUser,
-			consent,
-			donor,
-			user,
-		};
+			const updatedDonor = await DonorController.Donor.update(donor._id, updateFields);
+			return updatedDonor;
+		} catch (e) {
+			throw e;
+		}
 	},
 
 	async checkBloodBagExists({ bag_number, event_id }) {
