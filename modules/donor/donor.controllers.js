@@ -160,7 +160,9 @@ const Donor = {
 
 		return DonorModel.findOneAndUpdate(
 			{ _id: ObjectId(id) },
-			payload.last_donated_date && { $addToSet: { donations_legacy: payload.last_donated_date }, $set: payload },
+			payload.last_donated_date
+				? { $addToSet: { donations_legacy: payload.last_donated_date }, $set: payload }
+				: { $set: payload },
 			{ new: true },
 		);
 	},
