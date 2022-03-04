@@ -2,14 +2,14 @@ const mongoose = require('mongoose');
 const RSUser = require('rs-user');
 const otpGenerator = require('otp-generator');
 const { ERR } = require('../../helpers/utils/error');
-
 const { DataUtils } = require('../../helpers/utils');
 const messenger = require('../../helpers/utils/messenger');
 const smsService = require('../../helpers/utils/sms');
-const { Role } = require('./role.controllers');
+
 const OtpModel = require('../otp/otp.model');
 const OTP = require('../../constants/otp');
-const RoleController = require('./role.controllers');
+const { Role } = require('./role.controllers');
+const { Donor: DonorController } = require('../donor/donor.controllers');
 
 const { ObjectId } = mongoose.Schema;
 
@@ -296,10 +296,19 @@ const controllers = {
 		}
 	},
 	async createTokenData(user) {
-		const permissions = await RoleController.calculatePermissions(user.roles);
+		const permissions = await Role.calculatePermissions(user.roles);
 		return {
 			permissions,
 		};
+	},
+
+	async createDonorAndUpdateUser({ userId, payload }) {
+		console.log('\npayload', payload);
+		const resDonor = await DonorController.add(payload, { user_id: userId });
+		console.log('\nresDonor', resDonor);
+		const resUser = await User.update(userId, { ...payload, donor: resDonor.id, is_donor: payload.isDonor });
+		console.log('\nresUser', resUser);
+		return resUser;
 	},
 
 	async googleLogin(request) {
@@ -308,12 +317,23 @@ const controllers = {
 		const res = await User.authenticateExternal({
 			service: 'google',
 			service_id: payload.serviceId,
-			tokenData: this.createTokenData,
+			tokenData: controllers.createTokenData,
 			data: {
 				...payload,
 				wallet_address: payload.walletAddress,
 			},
 		});
+		if (payload.isDonor === true) {
+			const existingDonor = await DonorController.searchDonorId(res.user.id);
+			console.log('existing donor', existingDonor);
+			let response;
+			if (!existingDonor || existingDonor.length === 0) {
+				response = await controllers.createDonorAndUpdateUser({ userId: res.user.id, payload });
+			} else {
+				response = await User.update(res.user.id, { donor: existingDonor[0].id });
+			}
+			res.user = response;
+		}
 		return res;
 	},
 
