@@ -37,6 +37,7 @@ module.exports = {
 			bloodGroup: Joi.string(),
 			gender: Joi.string(),
 			imageUrl: Joi.string(),
+			isDonor: Joi.boolean(),
 		}),
 	},
 };
