@@ -24,7 +24,7 @@ const Schema = mongoose.Schema(
 			verified_date: { type: Date },
 		},
 		last_donated_date: { type: Date },
-		event: { type: ObjectId, ref: 'Event' },
+		events: [{ type: ObjectId, ref: 'Event' }],
 		donations: [
 			{
 				event_id: { type: ObjectId, ref: 'Event', required: true },

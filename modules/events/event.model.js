@@ -25,6 +25,7 @@ const EventSchema = mongoose.Schema(
 			required: true,
 			ref: 'User',
 		},
+		registered_users: [{ type: ObjectId, ref: 'User' }],
 		created_by: { type: ObjectId, ref: 'User' },
 		updated_by: { type: ObjectId, ref: 'User' },
 	},
