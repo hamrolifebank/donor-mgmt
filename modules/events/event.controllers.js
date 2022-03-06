@@ -212,25 +212,54 @@ const Event = {
 		return false;
 	},
 
+	async addEventToDonor({ eventId, userId }) {
+		const donor = await DonorController.Donor.getByUserId(userId);
+		const events = donor.events || [];
+		events.push(eventId);
+		donor.events = events;
+		return donor.save();
+	},
+
+	async removeEventFromDonor({ eventId, userId }) {
+		const donor = await DonorController.Donor.getByUserId(userId);
+		let events = donor.events || [];
+		events = events.filter(el => el != eventId);
+		donor.events = events;
+		return donor.save();
+	},
+
+	async addUserToEvent({ eventId, userId }) {
+		const event = await EventModel.findById(eventId);
+		const users = event.registered_users || [];
+		users.push(userId);
+		event.registered_users = users;
+		return event.save();
+	},
+
+	async removeUserFromEvent({ eventId, userId }) {
+		const event = await EventModel.findById(eventId);
+		let users = event.registered_users || [];
+		users = users.filter(el => el != userId);
+		event.registered_users = users;
+		return event.save();
+	},
+
 	async register(eventId, payload) {
-		try {
-			if (!(await this.checkEventExists(eventId))) throw ERR.EVENT_NOEXISTS;
-			if (!(await this.checkEventValid(eventId))) throw ERR.EVENT_EXPIRED;
-			if (await this.checkUserRegisteredToEvent({ eventId, userId: payload.userId })) {
-				throw ERR.EVENT_ALREADY_REGISTERED;
-			}
-
-			const donor = await DonorController.Donor.getByUserId(payload.userId);
-			const updateFields = {
-				event: eventId,
-				updated_by: payload.userId,
-			};
-
-			const updatedDonor = await DonorController.Donor.update(donor._id, updateFields);
-			return updatedDonor;
-		} catch (e) {
-			throw e;
+		if (!(await this.checkEventExists(eventId))) throw ERR.EVENT_NOEXISTS;
+		if (!(await this.checkEventValid(eventId))) throw ERR.EVENT_EXPIRED;
+		if (await this.checkUserRegisteredToEvent({ eventId, userId: payload.userId })) {
+			throw ERR.EVENT_ALREADY_REGISTERED;
 		}
+		const updatedDonor = await this.addEventToDonor({ eventId, userId: payload.userId });
+		const updatedEvent = await this.addUserToEvent({ eventId, userId: payload.userId });
+		return updatedDonor;
+	},
+
+	async unregister(eventId, payload) {
+		if (!(await this.checkEventExists(eventId))) throw ERR.EVENT_NOEXISTS;
+		const updatedDonor = await this.removeEventFromDonor({ eventId, userId: payload.userId });
+		const updatedEvent = await this.removeUserFromEvent({ eventId, userId: payload.userId });
+		return updatedDonor;
 	},
 
 	async checkBloodBagExists({ bag_number, event_id }) {
@@ -319,6 +348,7 @@ module.exports = {
 	},
 	getRegisterOption: req => Event.getRegisterOption({ eventId: req.params.id, user_id: req.tokenData.user_id }),
 	register: req => Event.register(req.params.id, req.payload),
+	unregister: req => Event.unregister(req.params.id, req.payload),
 	check: async req => {
 		let result = false;
 		const event_id = req.params.id;

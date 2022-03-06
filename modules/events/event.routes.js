@@ -13,6 +13,7 @@ const routes = {
 	listEventWithDetails: ['GET', '/{eventId}/donors', 'Get event details'],
 	getRegisterOption: ['GET', '/{eventId}/register', 'Get register options'],
 	register: ['POST', '/{id}/register', 'Register anyone to an event'],
+	unregister: ['POST', '/{id}/unregister', 'Un-Register user from an event'],
 	check: ['GET', '/{eventId}/check', 'Check bloodbag or tubeID'],
 };
 
