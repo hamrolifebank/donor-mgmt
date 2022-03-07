@@ -8,7 +8,7 @@ const routes = {
 	login: ['POST', '/login', 'Login using username and password'],
 	register: ['POST', '/register', 'Register new User'],
 	findById: ['GET', '/{id}', 'Find a user by id', [USER.READ, USER.ADMIN]],
-	update: ['POST', '/{id}', 'Update user data', [USER.WRITE, USER.ADMIN]],
+	update: ['POST', '/{id}', 'Update user data'],
 	updateStatus: ['PATCH', '/{id}/status', 'Make user active or inactive', [USER.WRITE, USER.ADMIN]],
 	addRoles: ['PATCH', '/{id}/roles', 'Add roles to a user', [USER.WRITE, USER.ADMIN]],
 	removeRoles: ['DELETE', '/{id}/roles', 'Remove roles from user', [USER.WRITE, USER.ADMIN]],
