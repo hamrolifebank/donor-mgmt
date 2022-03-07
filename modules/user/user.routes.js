@@ -17,6 +17,7 @@ const routes = {
 	resetPassword: ['POST', '/{id}/reset_password', 'Reset Password'],
 	changePassword: ['POST', '/{id}/change_password', 'Change Password'],
 	getFullInfo: ['GET', '/me', 'Get current user info'],
+	getDonationsHistory: ['GET', '/me-history', 'Get current user donation history'],
 };
 
 /**

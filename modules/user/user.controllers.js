@@ -339,7 +339,19 @@ const controllers = {
 
 	async getFullInfo(req) {
 		const user = await User.validateToken(req.headers.access_token);
-		return User.model.findById(user._id, { password: 0 }).populate('comms').populate('donor');
+		const res = await DonorController.getByUserId(user.user.id);
+		return res;
+	},
+
+	async getDonationsHistory(req) {
+		const user = await User.validateToken(req.headers.access_token);
+		const donor = await DonorController.getByUserId(user.user.id);
+		return donor.donations;
+	},
+
+	async getByEmail(req) {
+		const { email } = req.payload;
+		console.log('email', email);
 	},
 };
 
