@@ -139,6 +139,13 @@ const Donor = {
 		return donor;
 	},
 
+	async getByEmail(email) {
+		const donor = await DonorModel.findOne({
+			email,
+		});
+		return donor;
+	},
+
 	async update(id, payload) {
 		if (await this.checkBloodVerification(id)) {
 			delete payload.blood_group;
