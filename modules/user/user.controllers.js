@@ -115,24 +115,26 @@ const controllers = {
 		const { id: userId } = req.params;
 		const { user: tokenUser } = await User.validateToken(headers.access_token);
 		let response;
-		if (req.payload.is_donor === true) {
-			const existingDonor = await DonorController.getByEmail(payload.email);
-			if (!existingDonor || existingDonor.length === 0) {
-				response = await controllers.createDonorAndUpdateUser({ userId, payload });
-			} else {
-				await DonorController.update(existingDonor.id, {
-					...payload,
-					user_id: userId,
-					updated_by: tokenUser.id,
-				});
-				response = await controllers.updateUser(userId, {
-					...payload,
-					donor: existingDonor.id,
-				});
-			}
+		// if (req.payload.is_donor === true) {
+		const existingDonor = await DonorController.getByEmail(payload.email);
+		if (!existingDonor || existingDonor.length === 0) {
+			response = await controllers.createDonorAndUpdateUser({ userId, payload });
 		} else {
-			response = await controllers.updateUser(userId, payload);
+			console.log('has existing donor');
+			console.log(payload);
+			await DonorController.update(existingDonor.id, {
+				...payload,
+				user_id: userId,
+				updated_by: tokenUser.id,
+			});
+			response = await controllers.updateUser(userId, {
+				...payload,
+				donor: existingDonor.id,
+			});
 		}
+		// } else {
+		// 	response = await controllers.updateUser(userId, payload);
+		// }
 		return response;
 	},
 
