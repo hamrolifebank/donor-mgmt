@@ -31,7 +31,7 @@ const Schema = mongoose.Schema(
 				event_name: { type: String, required: true },
 				location: { type: String },
 				date: { type: Date, required: true },
-				time: { type: String },
+				beneficiary: { type: String },
 			},
 		],
 		donations_legacy: [{ date: Date, site: String }],
