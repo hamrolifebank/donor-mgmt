@@ -45,10 +45,15 @@ const Templates = {
 		subject: 'You have received an order',
 		html: `${__dirname}/../../assets/email_templates/order_added.html`,
 	},
-	OTP_SEND: {
+	SEND_OTP: {
 		from: '"Hamro LifeBank Team" <team@hamrolifebank.com>',
 		subject: 'OTP verification',
 		html: `${__dirname}/../../public/email_templates/send_otp.html`,
+	},
+	SEND_PNEUMONICS: {
+		from: '"Hamro LifeBank Team" <team@hamrolifebank.com>',
+		subject: 'Backup Passcode',
+		html: `${__dirname}/../../public/email_templates/send_pneumonics.html`,
 	},
 };
 
@@ -90,10 +95,10 @@ class Messenger {
 		return 'sms';
 	}
 
-	async sendOtp({ email, otp, template: temp, otpValidTime }) {
+	async sendOtp({ email, otp, template: templateName, otpValidTime }) {
 		try {
 			const me = this;
-			const template = this.getTemplate(temp);
+			const template = this.getTemplate(templateName);
 			if (!template) throw new Error('No template is defined');
 			if (!email) throw new Error('No receipent was specified');
 
@@ -101,10 +106,27 @@ class Messenger {
 				from: template.from,
 				subject: 'OTP Verification',
 				to: email,
-				// text: `<h1><b>HLB Wallet Verification Code</b></h1><br/><br/>
-				//     <h2>${otp}</h3><br/><br/>
-				//     <h4>Use this code to verify your account. The code will be valid for only 5 minutes.</h4>`,
-				html: me.getHtmlBody(temp, { otp, otpValidTime }),
+				html: me.getHtmlBody(templateName, { otp, otpValidTime }),
+			};
+			await transporter.sendMail(mailOptions);
+			return 'Email sent successfully!';
+		} catch (e) {
+			return e;
+		}
+	}
+
+	async sendPneumonics({ email, pneumonics, template: templateName }) {
+		try {
+			const me = this;
+			const template = this.getTemplate(templateName);
+			if (!template) throw new Error('No template is defined');
+			if (!email) throw new Error('No receipent was specified');
+
+			const mailOptions = {
+				from: template.from,
+				subject: 'Backup Passcode for HLB Donation App',
+				to: email,
+				html: me.getHtmlBody(templateName, { pneumonics }),
 			};
 			await transporter.sendMail(mailOptions);
 			return 'Email sent successfully!';

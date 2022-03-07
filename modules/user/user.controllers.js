@@ -259,7 +259,7 @@ const controllers = {
 			await messenger.sendOtp({
 				email,
 				otp,
-				template: 'OTP_SEND',
+				template: 'SEND_OTP',
 				otpValidTime: OTP.VALID_TIME,
 			});
 
@@ -354,9 +354,14 @@ const controllers = {
 		return donor.donations;
 	},
 
-	async getByEmail(req) {
-		const { email } = req.payload;
-		console.log('email', email);
+	async sendPneumonicsToEmail(req) {
+		const { email, pneumonics } = req.payload;
+		const res = await messenger.sendPneumonics({
+			email,
+			template: 'SEND_PNEUMONICS',
+			pneumonics,
+		});
+		return res;
 	},
 };
 
