@@ -314,15 +314,20 @@ const controllers = {
 	async googleLogin(request) {
 		console.log('inside googlelogin:', request.payload);
 		const { payload } = request;
-		const res = await User.authenticateExternal({
-			service: 'google',
-			service_id: payload.serviceId,
-			tokenData: controllers.createTokenData,
-			data: {
-				...payload,
-				wallet_address: payload.walletAddress,
+		const res = await User.authenticateExternal(
+			{
+				service: 'google',
+				service_id: payload.serviceId,
+				tokenData: controllers.createTokenData,
+				data: {
+					...payload,
+					wallet_address: payload.walletAddress,
+					social_data: payload.socialData,
+				},
 			},
-		});
+			{ useEmailToFindUser: true },
+		);
+
 		if (payload.isDonor === true) {
 			const existingDonor = await DonorController.getByUserId(res.user.id);
 			console.log('existing donor', existingDonor);
@@ -330,7 +335,7 @@ const controllers = {
 			if (!existingDonor || existingDonor.length === 0) {
 				response = await controllers.createDonorAndUpdateUser({ userId: res.user.id, payload });
 			} else {
-				response = await User.update(res.user.id, { donor: existingDonor[0].id });
+				response = await User.update(res.user.id, { donor: existingDonor.id });
 			}
 			res.user = response;
 		}
