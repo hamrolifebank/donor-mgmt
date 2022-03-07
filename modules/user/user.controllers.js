@@ -3,15 +3,27 @@ const RSUser = require('rs-user');
 const otpGenerator = require('otp-generator');
 const { ERR } = require('../../helpers/utils/error');
 const { DataUtils } = require('../../helpers/utils');
+const { NameParser } = require('../../node_modules/rs-user/lib/utils');
+
 const messenger = require('../../helpers/utils/messenger');
 const smsService = require('../../helpers/utils/sms');
 
 const OtpModel = require('../otp/otp.model');
 const OTP = require('../../constants/otp');
 const { Role } = require('./role.controllers');
-const { Donor: DonorController } = require('../donor/donor.controllers');
+const { Donor: DonorController, Donor } = require('../donor/donor.controllers');
 
 const { ObjectId } = mongoose.Schema;
+
+const sanitizeGender = gender => {
+	try {
+		gender = gender.substring(0, 1).toUpperCase();
+		if (gender === 'M' || gender === 'F') return gender;
+		return 'O';
+	} catch (e) {
+		return 'U';
+	}
+};
 
 const fnCreateSchema = (schema, collectionName) => {
 	const userSchema = mongoose.Schema(schema, {
@@ -98,9 +110,39 @@ const controllers = {
 		return User.model.find({ roles: role }).select('-password');
 	},
 
-	async update(request) {
-		const res = await User.update(request.params.id, request.payload);
-		return res;
+	async update(req) {
+		const { payload, headers } = req;
+		const { id: userId } = req.params;
+		const { user: tokenUser } = await User.validateToken(headers.access_token);
+		let response;
+		if (req.payload.is_donor === true) {
+			const existingDonor = await DonorController.getByEmail(payload.email);
+			if (!existingDonor || existingDonor.length === 0) {
+				response = await controllers.createDonorAndUpdateUser({ userId, payload });
+			} else {
+				await DonorController.update(existingDonor.id, {
+					...payload,
+					user_id: userId,
+					updated_by: tokenUser.id,
+				});
+				response = await controllers.updateUser(userId, {
+					...payload,
+					donor: existingDonor.id,
+				});
+			}
+		} else {
+			response = await controllers.updateUser(userId, payload);
+		}
+		return response;
+	},
+
+	async updateUser(id, payload) {
+		if (payload.name && typeof payload.name === 'string') {
+			payload.name = NameParser.parse(payload.name);
+		}
+		['password', 'is_approved', 'is_active', 'roles'].forEach(e => delete payload[e]);
+		payload.gender = sanitizeGender(payload.gender);
+		return User.model.findByIdAndUpdate(id, { $set: payload }, { new: true });
 	},
 
 	async removeRoles(request) {
@@ -303,16 +345,12 @@ const controllers = {
 	},
 
 	async createDonorAndUpdateUser({ userId, payload }) {
-		console.log('\npayload', payload);
 		const resDonor = await DonorController.add({ ...payload, user_id: userId });
-		console.log('\nresDonor', resDonor);
-		const resUser = await User.update(userId, { ...payload, donor: resDonor.id, is_donor: payload.isDonor });
-		console.log('\nresUser', resUser);
+		const resUser = await controllers.updateUser(userId, { ...payload, donor: resDonor.id });
 		return resUser;
 	},
 
 	async googleLogin(request) {
-		console.log('inside googlelogin:', request.payload);
 		const { payload } = request;
 		const res = await User.authenticateExternal(
 			{
@@ -327,18 +365,6 @@ const controllers = {
 			},
 			{ useEmailToFindUser: true },
 		);
-
-		if (payload.isDonor === true) {
-			const existingDonor = await DonorController.getByUserId(res.user.id);
-			console.log('existing donor', existingDonor);
-			let response;
-			if (!existingDonor || existingDonor.length === 0) {
-				response = await controllers.createDonorAndUpdateUser({ userId: res.user.id, payload });
-			} else {
-				response = await User.update(res.user.id, { donor: existingDonor.id });
-			}
-			res.user = response;
-		}
 		return res;
 	},
 
