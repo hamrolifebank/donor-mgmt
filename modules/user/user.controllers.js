@@ -57,6 +57,7 @@ const User = new RSUser.User({
 		updated_at: Date,
 		email_verified: { type: Boolean, default: false },
 		phone_verified: { type: Boolean, default: false },
+		roles: { type: [String], default: ['User'] },
 	},
 	fnCreateSchema,
 });
