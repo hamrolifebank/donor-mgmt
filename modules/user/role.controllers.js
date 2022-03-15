@@ -16,26 +16,31 @@ module.exports = {
 		data = [...permissions];
 		const total = data.length;
 		data = data.map(d => ({
-			permissions: d
+			permissions: d,
 		}));
 		return { data, total };
+	},
+	async getUserPermsInternal(roleName) {
+		const permissions = await Role.calculatePermissions(roleName);
+		const data = [...permissions];
+		return data;
 	},
 	addPermissions: req =>
 		Role.addPermission({
 			id: req.params.id,
-			permissions: req.payload.permissions
+			permissions: req.payload.permissions,
 		}),
 	removePermissions: req =>
 		Role.removePermission({
 			id: req.params.id,
-			permissions: req.payload.permissions
+			permissions: req.payload.permissions,
 		}),
 	list(req) {
 		const { limit, start, name } = req.query;
 		const filter = {};
 		if (name) {
 			filter.name = {
-				$regex: new RegExp(RSUtils.Text.escapeRegex(name), 'gi')
+				$regex: new RegExp(RSUtils.Text.escapeRegex(name), 'gi'),
 			};
 		}
 		return DataUtils.paging({
@@ -45,17 +50,17 @@ module.exports = {
 			model: Role.model,
 			query: [
 				{
-					$match: filter
+					$match: filter,
 				},
 				{
 					$project: {
 						name: 1,
 						permissions: 1,
 						expiry_date: 1,
-						is_system: 1
-					}
-				}
-			]
+						is_system: 1,
+					},
+				},
+			],
 		});
-	}
+	},
 };
