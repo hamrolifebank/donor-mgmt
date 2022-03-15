@@ -1,6 +1,7 @@
 const ethers = require('ethers');
 const config = require('config');
 const { User, Role } = require('../../modules');
+const { getUserPermsInternal } = require('../../modules/user/role.controllers');
 const { ERR } = require('./error');
 
 const CheckSignature = async (data, signature) => ethers.utils.verifyMessage(data, signature);
@@ -13,14 +14,14 @@ const checkValidUser = async walletAddress => {
 const checkPermissions = (user_perm, access_perm) => user_perm.some(v => access_perm.indexOf(v) !== -1);
 
 const checkUserPermissions = async ({ user, routePermissions }) => {
-	const roles = { user };
+	const { roles } = user;
 
 	if (!roles || !roles.length) throw ERR.UNAUTHORIZED;
 	let userPermissions = [];
 
 	userPermissions = await Promise.all(
 		roles.map(async role => {
-			const rolePermissions = await Role.getUserPermsInternal(role);
+			const rolePermissions = await getUserPermsInternal(role);
 			return [...rolePermissions];
 		}),
 	);
