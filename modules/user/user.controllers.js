@@ -173,6 +173,22 @@ const controllers = {
 		}
 		try {
 			const user = await User.create(data);
+
+			let response;
+			const existingDonor = await DonorController.getByEmail(data.email);
+			if (!existingDonor || existingDonor.length === 0) {
+				response = await controllers.createDonorAndUpdateUser({ userId: user._id, payload: data });
+			} else {
+				await DonorController.update(existingDonor.id, {
+					...data,
+					user_id: user._id,
+					updated_by: user._id,
+				});
+				response = await controllers.updateUser(user._id, {
+					...data,
+					donor: existingDonor.id,
+				});
+			}
 			return user;
 		} catch (e) {
 			return e;
@@ -391,6 +407,15 @@ const controllers = {
 			pneumonics,
 		});
 		return res;
+	},
+
+	async checkIfUserExists(req) {
+		const { email } = req.payload;
+		const res = await User.model.findOne({ email });
+		if (res && res.wallet_backup && res.wallet_address) {
+			return res;
+		}
+		return null;
 	},
 };
 
