@@ -10,6 +10,12 @@ module.exports = {
 			password: Joi.string(),
 			roles: Joi.array().items(Joi.string()),
 			picture: Joi.string(),
+			address: Joi.string(),
+			wallet_address: Joi.string(),
+			wallet_backup: Joi.object(),
+			blood_group: Joi.string(),
+			gender: Joi.string(),
+			is_donor: Joi.boolean(),
 		}).label('User'),
 	},
 	login: {
