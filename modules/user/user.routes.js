@@ -3,9 +3,10 @@ const controllers = require('./user.controllers');
 const { USER } = require('../../constants/permissions');
 
 const routes = {
-	add: ['POST', '', 'Add a new user', [USER.WRITE, USER.ADMIN]],
+	add: ['POST', '', 'Add a new user'],
 	list: ['GET', '', 'List all users', [USER.READ, USER.ADMIN]],
 	login: ['POST', '/login', 'Login using username and password'],
+	checkIfUserExists: ['POST', '/check', 'Check if user exists'],
 	register: ['POST', '/register', 'Register new User'],
 	findById: ['GET', '/{id}', 'Find a user by id', [USER.READ, USER.ADMIN]],
 	update: ['POST', '/{id}', 'Update user data'],
